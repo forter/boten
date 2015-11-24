@@ -1,9 +1,9 @@
 from setuptools import setup
 
 setup(
-    name='slackbot',
+    name='boten',
     version='0.1',
-    packages=['slackbot'],
+    packages=['boten'],
     url='',
     license='',
     author='Moshe Zada',
