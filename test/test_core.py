@@ -1,4 +1,4 @@
-from slackbot.core import BaseBot
+from boten.core import BaseBot
 import payloads
 
 
