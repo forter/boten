@@ -1,22 +1,24 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from glob import glob
 from importlib import import_module
 from boto import sqs
 import config
 import utils
 import core
-import os
+import logging
 
 
 def init_bots():
 
-    bots_enabled = {bot.split('/')[2].split('.')[0] for bot in glob('boten/bots_enabled/*py')} - set(['__init__'])
+    bots_enabled = core.get_enabled_bots()
     return {bot: import_module('boten.bots_enabled.' + bot).Bot() for bot in bots_enabled}
 
 
 if __name__ == '__main__':
 
-    os.popen('pkill -f main.py').read()
-    logger = utils.setup_logging(False)
+    utils.setup_logging(False)
+    logger = logging.getLogger("boten")
     sqs_conn = sqs.connect_to_region(config.AWS_REGION)
 
     queue = sqs_conn.get_queue(config.QUEUE_NAME)
