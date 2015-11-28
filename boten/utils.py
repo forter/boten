@@ -17,16 +17,25 @@ def get_func_doc(fn):
     return doc
 
 
-def send_pretty_message(channel, message, icon=":tada:", username='deployBot'):
+def send_slack_message(channel, message, icon=":tada:", username='deployBot'):
     logger = logging.getLogger(inspect.stack()[0][3])
     url = "https://hooks.slack.com/services/%s" % config.SLACK_KEY
     params = {
         'channel': channel,
         'icon_emoji': icon,
-        'attachments': [{"fallback": message['text'],
-                         "color": message['color'],
-                         "text": message['text']}],
         'username': username}
+    if type(message) == str or type(message) == unicode:
+        params.update({'text': message})
+    elif type(message) == list:
+        params.update({'attachments': [{"fallback": m['text'],
+                       "color": m['color'],
+                       "text": m['text']} for m in message]})
+    elif type(message) == dict:
+        params.update({'attachments': [{"fallback": message['text'],
+                                        "color": message['color'],
+                                        "text": message['text']}]})
+    else:
+        logger.error('Unknown format')
     response = requests.post(url, data=json.dumps(params), verify=False)
     if not response.status_code == 200:
         logger.error("Got error from slack: %s " % response.text)
@@ -36,11 +45,10 @@ def send_pretty_message(channel, message, icon=":tada:", username='deployBot'):
 def poll_queue(queue):
     logger = logging.getLogger(inspect.stack()[0][3])
     # Total wait time when queue is empty is 10 secs
-    msg = queue.read(visibility_timeout=3600, wait_time_seconds=1)
+    msg = queue.read(visibility_timeout=3600, wait_time_seconds=10)
     while msg is None:
         print msg
-        # time.sleep(1)
-        msg = queue.read(visibility_timeout=3600, wait_time_seconds=1)
+        msg = queue.read(visibility_timeout=3600, wait_time_seconds=10)
     # Parse message
     try:
         msg_obj = json.loads(msg.get_body())

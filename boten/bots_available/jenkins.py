@@ -1,11 +1,8 @@
-# global params
-# * seilt
-# * verbose
-
 from __future__ import absolute_import
-from core import BaseBot
+from boten.core import BaseBot
 import jenkins
 import config
+from collections import defaultdict
 
 
 class Bot(BaseBot):
@@ -22,14 +19,16 @@ class Bot(BaseBot):
         else:
             return 'danger'
 
-    def command_status(self):
+    def get_jobs(self):
+        jobs = defaultdict(list)
         for job in self.server.get_jobs():
-            yield {'text': "{} with status {}".format(job['name'], job['color']),
-                   'color': self.color(job)}
+            jobs[self.color(job)].append(job['name'])
+        return jobs
+
+    def command_status(self):
+        jobs = self.get_jobs()
+        yield [{"text": "\n".join(x[1]), "color": x[0]} for x in jobs.items()]
 
     def command_failed(self):
-        for job in self.server.get_jobs():
-            if job['color'] not in ['blue', 'blue_anime', 'disabled']:
-
-                yield {'text': '{} with status {}'.format(job['name'], job['color']),
-                       'color': self.color(job)}
+        jobs = self.get_jobs()
+        yield {"text": "\n".join(jobs["danger"]), "color": "danger"}
