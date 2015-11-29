@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 from boten import core
 import jenkins
-import config
+from boten.config import jenkins as config
 from collections import defaultdict
 
 

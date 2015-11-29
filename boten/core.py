@@ -2,7 +2,7 @@ import shlex
 from glob import glob
 import traceback
 import logging
-import config
+from boten import config
 import inspect
 import json
 import requests
@@ -66,7 +66,6 @@ class SlackMessage(object):
         logger = logging.getLogger(inspect.stack()[0][3])
         url = "https://hooks.slack.com/services/%s" % config.SLACK_KEY
         params = self.payload_builder()
-        logger.info(params)
         response = requests.post(url, data=json.dumps(params), verify=False)
         self._clear()
         if not response.status_code == 200:
