@@ -121,7 +121,6 @@ class BaseBot(object):
                 for message in command_method(*slack_mandatory_args, **slack_optional_args):
                     yield message
             except TypeError as e:
-                raise
                 yield "Got TypeError while processing: {}\n{}".format(e.message, self.usage(command_method))
                 yield traceback.format_exc()
         elif len(prefix_like_commands) == 0:
