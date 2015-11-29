@@ -1,8 +1,9 @@
-from core import BaseBot
+from __future__ import absolute_import
+from boten import core
 from core import get_enabled_bots
 
 
-class Bot(BaseBot):
+class Bot(core.BaseBot):
 
     def command_ping(self, user_name):
         yield "pong {}".format(user_name)
