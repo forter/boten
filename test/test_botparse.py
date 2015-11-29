@@ -17,6 +17,19 @@ class TestBot(BaseBot):
         yield "message1"
         yield "message2"
 
+    def foo(self):
+        pass
+
+
+def test_available_commands():
+    bot = TestBot()
+    available_commands = bot.available_commands()
+    assert "command_arg_bot" in available_commands
+    assert "command_no_arg_bot" in available_commands
+    assert "command_optional_arg_bot" in available_commands
+    assert "command_two_message_bot" in available_commands
+    assert "foo" not in available_commands
+
 
 def test_arg_bot_with_arg():
     bot = TestBot()
