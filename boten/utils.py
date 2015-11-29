@@ -3,8 +3,7 @@ import json
 from contextlib import contextmanager
 import logging
 import inspect
-import requests
-import config
+from boten import core
 
 
 def setup_logging(debug):
@@ -17,32 +16,18 @@ def get_func_doc(fn):
     return doc
 
 
-def send_slack_message(channel, message, icon=":tada:", username='deployBot'):
+def respond(payload, response):
     logger = logging.getLogger(inspect.stack()[0][3])
-    url = "https://hooks.slack.com/services/%s" % config.SLACK_KEY
-    params = {
-        'channel': channel,
-        'icon_emoji': icon,
-        'username': username}
-    if type(message) == str or type(message) == unicode:
-        params.update({'text': message})
-    elif type(message) == list:
-        params.update({'attachments': [{"fallback": m['text'],
-                       "color": m['color'],
-                       "text": m['text']} for m in message]})
-    elif type(message) == dict:
-        params.update({'attachments': [{"fallback": message['text'],
-                                        "color": message['color'],
-                                        "text": message['text']}]})
+    if type(response) == str or type(response) == unicode:
+        core.SlackMessage().channel("#" + payload['channel_name']).text(response)._send()
+    elif isinstance(response, core.SlackMessage):
+        response.channel("#" + payload['channel_name'])._send()
     else:
-        logger.error('Unknown format')
-    response = requests.post(url, data=json.dumps(params), verify=False)
-    if not response.status_code == 200:
-        logger.error("Got error from slack: %s " % response.text)
+        logger.error("Cannot handle message")
 
 
 @contextmanager
-def poll_queue(queue):
+def poll_sqs(queue):
     logger = logging.getLogger(inspect.stack()[0][3])
     # Total wait time when queue is empty is 10 secs
     msg = queue.read(visibility_timeout=3600, wait_time_seconds=10)

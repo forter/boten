@@ -1,15 +1,16 @@
 from __future__ import absolute_import
-from boten.core import BaseBot
+from boten import core
 import jenkins
 import config
 from collections import defaultdict
 
 
-class Bot(BaseBot):
+class Bot(core.BaseBot):
 
     def __init__(self):
         super(Bot, self).__init__()
         self.server = jenkins.Jenkins(config.CI_URL)
+        self.slack = core.SlackMessage().icon(':low_brightness:').username('jenkinsBot')
 
     def color(self, job):
         if job['color'] in ['blue', 'blue_anime']:
@@ -26,9 +27,10 @@ class Bot(BaseBot):
         return jobs
 
     def command_status(self):
-        jobs = self.get_jobs()
-        yield [{"text": "\n".join(x[1]), "color": x[0]} for x in jobs.items()]
+        for job in self.get_jobs().items():
+            self.slack.text("\n".join(job[1]), color=job[0])
+        yield self.slack
 
     def command_failed(self):
         jobs = self.get_jobs()
-        yield {"text": "\n".join(jobs["danger"]), "color": "danger"}
+        yield self.slack.text("\n".join(jobs["danger"]), color="danger")

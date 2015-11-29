@@ -1,16 +1,77 @@
 import shlex
-import utils
 from glob import glob
 import traceback
-
-
-def respond(payload, response):
-
-        utils.send_slack_message("#" + payload['channel_name'], response, icon=":robot_face:", username='slackBot')
+import logging
+import config
+import inspect
+import json
+import requests
 
 
 def get_enabled_bots():
-    return list({bot.split('/')[2].split('.')[0] for bot in glob('boten/bots_enabled/*py')} - set(['__init__']))
+    return list({bot.split('/')[-1].split('.')[0] for bot in glob('bots_enabled/*py')} - set(['__init__']))
+
+
+class SlackMessage(object):
+
+    def __init__(self):
+        self._text = ""
+        self._attachments = []
+        self._icon = ':robot_face:'
+        self._username = 'Boten'
+        self._channel = None
+
+    def _attach(self, attachment):
+        self._attachments.append(attachment)
+        return self
+
+    def _clear(self):
+        self._text = ""
+        self._attachments = []
+        return self
+
+    def payload_builder(self):
+        params = {
+            'channel': self._channel,
+            'icon_emoji': self._icon,
+            'username': self._username}
+        if self._text != "":
+            params.update({'text': self._text})
+        if self._attachments:
+            params.update({'attachments': self._attachments})
+        return params
+
+    def text(self, text, color=None):
+        if color is None:
+            self._text = text
+        else:
+            self._attach({"fallback": text,
+                          "color": color,
+                          "text": text})
+        return self
+
+    def channel(self, channel):
+        self._channel = channel
+        return self
+
+    def icon(self, icon):
+        self._icon = icon
+        return self
+
+    def username(self, username):
+        self._username = username
+        return self
+
+    def _send(self):
+        logger = logging.getLogger(inspect.stack()[0][3])
+        url = "https://hooks.slack.com/services/%s" % config.SLACK_KEY
+        params = self.payload_builder()
+        logger.info(params)
+        response = requests.post(url, data=json.dumps(params), verify=False)
+        self._clear()
+        if not response.status_code == 200:
+            logger.error("Got error from slack: %s " % response.text)
+        return self
 
 
 class BaseBot(object):

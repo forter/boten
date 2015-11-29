@@ -1,9 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
-from core import BaseBot
+from boten import core
 
 
-class Bot(BaseBot):
+class Bot(core.BaseBot):
 
     def __init__(self):
         super(Bot, self).__init__()
