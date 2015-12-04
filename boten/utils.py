@@ -18,10 +18,16 @@ def get_func_doc(fn):
 
 def respond(payload, response):
     logger = logging.getLogger(inspect.stack()[0][3])
+    if payload['channel_name'] == 'directmessage':
+        payload['channel_name'] = '@' + payload['user_name']
+    else:
+        payload['channel_name'] = '#' + payload['channel_name']
+    if payload['channel_name'].startswith('#'):
+        core.SlackMessage().channel(payload['channel_name']).text("{user_name} ran {command} {text}".format(**payload))._send()
     if type(response) == str or type(response) == unicode:
-        core.SlackMessage().channel("#" + payload['channel_name']).text(response)._send()
+        core.SlackMessage().channel(payload['channel_name']).text(response)._send()
     elif isinstance(response, core.SlackMessage):
-        response.channel("#" + payload['channel_name'])._send()
+        response.channel(payload['channel_name'])._send()
     else:
         logger.error("Cannot handle message")
 
