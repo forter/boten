@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 from boten import core
+from boten import utils
 from core import get_enabled_bots
 
 
@@ -13,3 +14,6 @@ class Bot(core.BaseBot):
 
     def command_enabled(self):
         yield ",".join(get_enabled_bots())
+
+    def command_pull(self):
+        yield utils.local_cmd("git pull")
