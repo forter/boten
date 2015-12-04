@@ -4,6 +4,8 @@ from contextlib import contextmanager
 import logging
 import inspect
 from boten import core
+from subprocess import Popen, PIPE
+
 
 
 def setup_logging(debug):
@@ -30,6 +32,18 @@ def respond(payload, response):
         response.channel(payload['channel_name'])._send()
     else:
         logger.error("Cannot handle message")
+
+
+def local_cmd(cmd, **kwargs):
+    logger = logging.getLogger(inspect.stack()[0][3])
+    logger.debug("Running: %s" % cmd)
+    p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE, **kwargs)
+    exit_code = p.wait()
+    if exit_code > 0:
+        logger.error("Failed to run %s" % cmd)
+        logger.error("stdout: %s" % p.stdout.read())
+        logger.error("sterr: %s" % p.stderr.read())
+    return p.stdout.read().strip()
 
 
 @contextmanager
