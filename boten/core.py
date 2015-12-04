@@ -70,6 +70,7 @@ class SlackMessage(object):
         self._clear()
         if not response.status_code == 200:
             logger.error("Got error from slack: %s " % response.text)
+            logger.error(params)
         return self
 
 
