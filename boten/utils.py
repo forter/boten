@@ -20,10 +20,11 @@ def get_func_doc(fn):
 
 def respond(payload, response):
     logger = logging.getLogger(inspect.stack()[0][3])
-    if payload['channel_name'] == 'directmessage':
-        payload['channel_name'] = '@' + payload['user_name']
-    else:
-        payload['channel_name'] = '#' + payload['channel_name']
+    if not (payload['channel_name'].startswith('@') or payload['channel_name'].startswith('#')):
+        if payload['channel_name'] == 'directmessage':
+            payload['channel_name'] = '@' + payload['user_name']
+        else:
+            payload['channel_name'] = '#' + payload['channel_name']
     if payload['channel_name'].startswith('#'):
         core.SlackMessage().channel(payload['channel_name']).text("{user_name} ran {command} {text}".format(**payload))._send()
     if type(response) == str or type(response) == unicode:
