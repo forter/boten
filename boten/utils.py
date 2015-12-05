@@ -7,7 +7,6 @@ from boten import core
 from subprocess import Popen, PIPE
 
 
-
 def setup_logging(debug):
     logging.basicConfig(level=logging.DEBUG if debug else logging.INFO, datefmt='%H:%M:%S',
                         format='[%(asctime)s] {%(name)33s:%(lineno)3d} %(levelname)8s - %(message)s')
@@ -20,11 +19,10 @@ def get_func_doc(fn):
 
 def respond(payload, response):
     logger = logging.getLogger(inspect.stack()[0][3])
-    if not (payload['channel_name'].startswith('@') or payload['channel_name'].startswith('#')):
-        if payload['channel_name'] == 'directmessage':
-            payload['channel_name'] = '@' + payload['user_name']
-        else:
-            payload['channel_name'] = '#' + payload['channel_name']
+    if payload['channel_name'] == 'directmessage':
+        payload['channel_name'] = '@' + payload['user_name']
+    elif not (payload['channel_name'].startswith('@') or payload['channel_name'].startswith('#')):
+        payload['channel_name'] = '#' + payload['channel_name']
     if payload['channel_name'].startswith('#'):
         core.SlackMessage().channel(payload['channel_name']).text("{user_name} ran {command} {text}".format(**payload))._send()
     if type(response) == str or type(response) == unicode:
