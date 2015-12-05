@@ -94,19 +94,16 @@ class BaseBot(object):
         return "> *Function name:* {name}\n\
                 > *Mandatory args are:* {man}\n\
                 > *Optional args are:* {optional}" \
-            .format(name=func.func_name.replace('command_', '/'),
+            .format(name=func.func_name.replace('command_', ''),
                     man=",".join(func_mandatory_args),
                     optional=",".join(func_optional_args))
 
-    def available_commands(self):
-        return [x for x in dir(self) if x.startswith('command_')]
-
     def run_command(self, payload):
         # Find method staring with gotten command
-        prefix_like_commands = [x for x in self.available_commands() if x.startswith('command_' + payload['subcommand'])]
+        prefix_like_commands = filter(lambda x: x.startswith(payload['subcommand']), self.commands)
         if len(prefix_like_commands) == 1:
             subcommand = prefix_like_commands[0]
-            command_method = getattr(self, subcommand)
+            command_method = getattr(self, "command_" + subcommand)
 
             # Parse slack args
             slack_args = shlex.split(payload['args'])
@@ -128,7 +125,7 @@ class BaseBot(object):
                 yield "Got Exception while processing: {}\n{}".format(e.message, self.usage(command_method))
                 yield traceback.format_exc()
         elif len(prefix_like_commands) == 0:
-            yield "*Command not found,*\navailable commands are {}".format(self.available_commands())
+            yield "*Command not found,*\navailable commands are:\n{}".format("\n".join(self.commands))
             return
         else:
             yield "*More then one command starts with {subcommand},*\
@@ -138,5 +135,5 @@ class BaseBot(object):
             return
 
     def command_help(self):
-        for child in self.available_commands():
-            yield self.usage(getattr(self, child))
+        for child in self.commands:
+            yield self.usage(getattr(self, "command_" + child))

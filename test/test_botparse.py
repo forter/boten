@@ -23,11 +23,11 @@ class TestBot(BaseBot):
 
 def test_available_commands():
     bot = TestBot()
-    available_commands = bot.available_commands()
-    assert "command_arg_bot" in available_commands
-    assert "command_no_arg_bot" in available_commands
-    assert "command_optional_arg_bot" in available_commands
-    assert "command_two_message_bot" in available_commands
+    available_commands = bot.commands
+    assert "arg_bot" in available_commands
+    assert "no_arg_bot" in available_commands
+    assert "optional_arg_bot" in available_commands
+    assert "two_message_bot" in available_commands
     assert "foo" not in available_commands
 
 
