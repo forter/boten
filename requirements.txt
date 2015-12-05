@@ -1,5 +1,5 @@
--e git+git@github.com:forter/boten.git@12b587b1a0a39a1511aa247c79e07c16c73cb8b1#egg=boten-master
 boto==2.38.0
+pygerduty==0.29.1
 multi-key-dict==2.0.3
 pbr==1.8.1
 python-jenkins==0.4.11
