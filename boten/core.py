@@ -81,8 +81,8 @@ class BaseBot(object):
     def usage(self, func):
 
         # Parse function args
-        func_args = func.__code__.co_varnames
-        func_defaults = set(func.func_defaults or [])
+        func_args = inspect.getargspec(func).args
+        func_defaults = set(inspect.getargspec(func).defaults or [])
         if len(func_defaults) == 0:
             func_optional_args = set()
             func_mandatory_args = set(func_args)
