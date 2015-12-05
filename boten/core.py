@@ -124,7 +124,7 @@ class BaseBot(object):
             except TypeError as e:
                 yield "Got TypeError while processing: {}\n{}".format(e.message, self.usage(command_method))
                 yield traceback.format_exc()
-            except Exception:
+            except Exception as e:
                 yield "Got Exception while processing: {}\n{}".format(e.message, self.usage(command_method))
                 yield traceback.format_exc()
         elif len(prefix_like_commands) == 0:
