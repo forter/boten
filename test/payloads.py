@@ -50,8 +50,8 @@ optional_arg_bot_with_optional_arg = {"token": "07AnC3dfVot4G3sHdu0UhWsV",
                                       "user_name": "moshe",
                                       "command": "/optional_arg_bot",
                                       "subcommand": "optional_arg_bot",
-                                      "args": "--optional=moshe",
-                                      "text": "--optional=moshe"}
+                                      "args": "optional=moshe",
+                                      "text": "optional=moshe"}
 
 optional_arg_bot_with_no_arg = {"token": "07AnC3dfVot4G3sHdu0UhWsV",
                                 "team_id": "T039LJAV1",
