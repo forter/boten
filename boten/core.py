@@ -106,10 +106,10 @@ class BaseBot(object):
             command_method = getattr(self, "command_" + subcommand)
 
             # Parse slack args
-            slack_args = shlex.split(payload['args'])
-            slack_optional_args = [x for x in slack_args if x.startswith('--')]
-            slack_optional_args = {x.split('=')[0][2:]: x.split('=')[1] for x in slack_optional_args}
-            slack_mandatory_args = [x for x in slack_args if not x.startswith('--')]
+            slack_args = shlex.split(payload['args'].encode('utf8'))
+            slack_optional_args = [x for x in slack_args if '=' in x]
+            slack_optional_args = {x.partition('=')[0]: x.partition('=')[2] for x in slack_optional_args}
+            slack_mandatory_args = [x for x in slack_args if '=' not in x]
 
             if len(slack_mandatory_args) != 0 and slack_mandatory_args[0] == "help":
                 yield self.usage(command_method)
