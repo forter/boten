@@ -36,7 +36,7 @@ Just create new function and ask for args, Boten will enforce the user for them.
         yield "pong {}".format(user_name)
 ```
 `/fun ping` will send `pong default`  
-but `/fun ping --user_name=moshe` will send `pong moshe`
+but `/fun ping user_name=moshe` will send `pong moshe`
 
 ### Sending messages to slack
 you can yield for messages while running, if you want to send message with slide colors you need to use core.SlackMessage
