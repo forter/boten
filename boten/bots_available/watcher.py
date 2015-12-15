@@ -2,13 +2,12 @@ from __future__ import absolute_import
 from boten import core
 import pygerduty
 import datetime
-from boten.config import watcher as config
 
 
 class Bot(core.BaseBot):
-    def __init__(self):
-        super(Bot, self).__init__()
-        self.pager = pygerduty.PagerDuty(config.ORG_NAME, config.PAGERDUTY_KEY)
+    def __init__(self, config):
+        super(Bot, self).__init__(config)
+        self.pager = pygerduty.PagerDuty(config['org_name'], config['pagerduty_key'])
 
     def command_who(self):
         now = datetime.datetime.now()

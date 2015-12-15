@@ -1,15 +1,14 @@
 from __future__ import absolute_import
 from boten import core
 import jenkins
-from boten.config import jenkins as config
 from collections import defaultdict
 
 
 class Bot(core.BaseBot):
 
-    def __init__(self):
-        super(Bot, self).__init__()
-        self.server = jenkins.Jenkins(config.CI_URL)
+    def __init__(self, config):
+        super(Bot, self).__init__(config)
+        self.server = jenkins.Jenkins(config['url'])
         self.slack = core.SlackMessage().icon(':low_brightness:').username('jenkinsBot')
 
     def color(self, job):
