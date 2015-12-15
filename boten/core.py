@@ -75,8 +75,9 @@ class SlackMessage(object):
 
 
 class BaseBot(object):
-    def __init__(self):
+    def __init__(self, config):
         self.commands = [method.partition('_')[2] for method in dir(self) if method.startswith('command')]
+        self.config = config
 
     def usage(self, func):
 
