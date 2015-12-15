@@ -44,7 +44,6 @@ if __name__ == '__main__':
     sqs_conn = sqs.connect_to_region(config.AWS_REGION)
 
     queue = sqs_conn.get_queue(config.QUEUE_NAME)
-    # queue.clear()
     bots = init_bots(parser)
     logger.info('bots loaded [{}]'.format(",".join(bots.keys())))
     while True:
