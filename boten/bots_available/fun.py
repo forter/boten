@@ -6,8 +6,8 @@ import random
 
 class Bot(core.BaseBot):
 
-    def __init__(self):
-        super(Bot, self).__init__()
+    def __init__(self, config):
+        super(Bot, self).__init__(config)
         self.next_time = BeautifulSoup(requests.post('http://devopsreactions.tumblr.com/random').content)
         self.victory_images = ["http://thejointblog.com/wp-content/uploads/2013/04/victory.jpg",
                                "http://www.quickmeme.com/img/ea/ea4671998341d9fbb6f7815394b49cb2890a50ac80b62802fb021c147c068d8e.jpg",
