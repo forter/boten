@@ -22,7 +22,7 @@ class TestBot(BaseBot):
 
 
 def test_available_commands():
-    bot = TestBot()
+    bot = TestBot({})
     available_commands = bot.commands
     assert "arg_bot" in available_commands
     assert "no_arg_bot" in available_commands
@@ -32,48 +32,48 @@ def test_available_commands():
 
 
 def test_arg_bot_with_arg():
-    bot = TestBot()
+    bot = TestBot({})
     response = list(bot.run_command(payloads.arg_bot_with_arg))
     assert response[0] == "hello moshe"
 
 
 def test_arg_bot_with_no_args():
-    bot = TestBot()
+    bot = TestBot({})
     response = list(bot.run_command(payloads.arg_bot_with_no_args))
     assert response[0].startswith("Got TypeError")  # Help message
 
 
 def test_no_arg_bot_without_arg():
-    bot = TestBot()
+    bot = TestBot({})
     response = list(bot.run_command(payloads.no_arg_bot_without_arg))
     assert response[0] == "hello"
 
 
 def test_no_arg_bot_with_arg():
-    bot = TestBot()
+    bot = TestBot({})
     response = list(bot.run_command(payloads.no_arg_bot_with_arg))
     assert response[0].startswith("Got TypeError")  # Help message
 
 
 def test_optional_arg_bot_with_optional_arg():
-    bot = TestBot()
+    bot = TestBot({})
     response = list(bot.run_command(payloads.optional_arg_bot_with_optional_arg))
     assert response[0] == 'hello moshe'
 
 
 def test_optional_arg_bot_with_no_arg():
-    bot = TestBot()
+    bot = TestBot({})
     response = list(bot.run_command(payloads.optional_arg_bot_with_no_arg))
     assert response[0] == 'hello default'
 
 
 def test_two_message_bot():
-    bot = TestBot()
+    bot = TestBot({})
     response = list(bot.run_command(payloads.two_message_bot))
     assert len(response) == 2
 
 
 def test_help_subcommand():
-    bot = TestBot()
+    bot = TestBot({})
     response = list(bot.run_command(payloads.no_arg_bot_with_arg))
     assert response[0].startswith("Got TypeError")  # Help message
