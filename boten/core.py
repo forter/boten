@@ -14,7 +14,7 @@ class Cached(object):
 
     def __call__(self, *args, **kwargs):
         # Format hashable key
-        key = str(args + tuple(sorted(kwargs.items())))
+        key = self.func.__name__
 
         # Try to load the cache
         cache = self.results.get(key, "no_cache")
@@ -26,13 +26,15 @@ class Cached(object):
 
 
 @Cached
-def get_config(section=None):
+def get_config(init='boten/boten.cfg'):
     parser = SafeConfigParser()
-    if len(parser.read('boten/boten.cfg')) == 0:
+    if len(parser.read(init)) == 0:
         raise IOError('Cannot find config file')
-    if section is not None:
-        return parser._sections.get(section, {})
     return parser._sections
+
+
+def get_bot_conf(section):
+    return get_config().get(section, {})
 
 
 class SlackMessage(object):
@@ -87,7 +89,7 @@ class SlackMessage(object):
 
     def _send(self):
         logger = logging.getLogger(inspect.stack()[0][3])
-        config = get_config(section="config")
+        config = get_config().get("config")
         url = "https://hooks.slack.com/services/%s" % config['slack_key']
         params = self.payload_builder()
         response = requests.post(url, data=json.dumps(params), verify=False)
