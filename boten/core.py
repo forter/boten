@@ -1,15 +1,38 @@
 import shlex
-from glob import glob
 import traceback
 import logging
-from boten import config
 import inspect
 import json
 import requests
+from ConfigParser import SafeConfigParser
 
 
-def get_enabled_bots():
-    return list({bot.split('/')[-1].split('.')[0] for bot in glob('bots_enabled/*py')} - set(['__init__']))
+class Cached(object):
+    def __init__(self, func):
+        self.func = func
+        self.results = {}
+
+    def __call__(self, *args, **kwargs):
+        # Format hashable key
+        key = str(args + tuple(sorted(kwargs.items())))
+
+        # Try to load the cache
+        cache = self.results.get(key, "no_cache")
+
+        # If there is no cache
+        if cache == "no_cache":
+            self.results[key] = self.func(*args, **kwargs)
+        return self.results[key]
+
+
+@Cached
+def get_config(section=None):
+    parser = SafeConfigParser()
+    if len(parser.read('boten/boten.cfg')) == 0:
+        raise IOError('Cannot find config file')
+    if section is not None:
+        return parser._sections.get(section, {})
+    return parser._sections
 
 
 class SlackMessage(object):
@@ -64,7 +87,8 @@ class SlackMessage(object):
 
     def _send(self):
         logger = logging.getLogger(inspect.stack()[0][3])
-        url = "https://hooks.slack.com/services/%s" % config.SLACK_KEY
+        config = get_config(section="config")
+        url = "https://hooks.slack.com/services/%s" % config['slack_key']
         params = self.payload_builder()
         response = requests.post(url, data=json.dumps(params), verify=False)
         self._clear()

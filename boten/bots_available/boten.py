@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 from boten import core
+from boten import get_config
 from boten import utils
-from ConfigParser import SafeConfigParser
 import glob
 
 
@@ -13,9 +13,7 @@ class Bot(core.BaseBot):
 
     @staticmethod
     def get_enabled_bots():
-        parser = SafeConfigParser()
-        parser.read('boten.cfg')
-        bots_enabled = parser.sections()
+        bots_enabled = get_config()
         bots_enabled.remove('config')
         return bots_enabled
 
@@ -32,5 +30,5 @@ class Bot(core.BaseBot):
         yield utils.local_cmd("git pull")
 
     def command_pull_all(self):
-        for repo in glob.glob('repo/*'):
+        for repo in glob.glob('boten/repo/*'):
             yield utils.local_cmd('git pull', cwd=repo)
