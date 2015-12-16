@@ -20,7 +20,7 @@ def init_bots():
         bot_config = config.get(bot, {})
         repo_name = bot_config.get('repo').split('/')[1]
         if bot_config.get('repo'):
-            if not os.path.isdir('boten/repo/' + repo_name):
+            if not os.path.exists('boten/repo/' + repo_name):
                 logger.info('Cloning {}'.format(bot_config.get('repo')))
                 utils.local_cmd('git clone git@github.com:{}.git'.format(bot_config.get('repo')), cwd='boten/repo')
         if not os.path.islink('boten/bots_enabled/{}.py'.format(bot)):
