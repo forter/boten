@@ -6,10 +6,11 @@ import boten
 import utils
 import logging
 import os
+import click
 
 
 def init_bots():
-
+    logger = logging.getLogger("init_bots")
     bots = {}
     config = boten.core.get_config()
     bots_enabled = config.keys()
@@ -33,11 +34,12 @@ def init_bots():
     return bots
 
 
-if __name__ == '__main__':
-
+@click.command()
+@click.option('-c', '--conf-file', default='boten/boten.cfg', help='Boten config file')
+def main(conf_file):
     utils.setup_logging(False)
     logger = logging.getLogger("boten")
-    config = boten.core.get_config()
+    config = boten.core.get_config(init=conf_file)
     sqs_conn = sqs.connect_to_region(config['config']['aws_region'])
 
     queue = sqs_conn.get_queue(config['config']['queue_name'])
@@ -55,3 +57,7 @@ if __name__ == '__main__':
                     utils.respond(payload, message)
             except Exception as e:
                 logger.exception("Cannot run")
+
+
+if __name__ == '__main__':
+    main()

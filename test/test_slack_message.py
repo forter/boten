@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+from __future__ import absolute_import
 from boten.core import SlackMessage
 from boten.core import get_config
 import requests_mock
@@ -32,7 +32,7 @@ def test_clear():
 
 
 def test_send():
-    config = get_config(section="config")
+    config = get_config().get("config")
     url = "https://hooks.slack.com/services/%s" % config['slack_key']
     slack = SlackMessage().text("test")
     with requests_mock.mock() as m:
