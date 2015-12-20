@@ -38,7 +38,6 @@ def get_bot_conf(section):
 
 
 class SlackMessage(object):
-
     def __init__(self):
         self._text = ""
         self._attachments = []
@@ -105,6 +104,9 @@ class BaseBot(object):
         self.commands = [method.partition('_')[2] for method in dir(self) if method.startswith('command')]
         self.config = config
         self.payload = None
+
+    def get_username(self, payload):
+        return payload['user_name']
 
     def usage(self, func):
 

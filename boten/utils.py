@@ -64,5 +64,4 @@ def poll_sqs(queue):
     queue.delete_message(msg)
 
 
-def get_username(payload):
-    return payload['user_name']
+
