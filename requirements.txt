@@ -1,5 +1,5 @@
 boto==2.38.0
-pygerduty==0.29.1
+pygerduty==0.30.0
 multi-key-dict==2.0.3
 pbr==1.8.1
 python-jenkins==0.4.11

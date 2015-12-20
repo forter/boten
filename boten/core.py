@@ -102,7 +102,8 @@ class BaseBot(object):
     def __init__(self, config):
         self.commands = [method.partition('_')[2] for method in dir(self) if method.startswith('command')]
         self.config = config
-
+        self.payload = None
+        
     def usage(self, func):
 
         # Parse function args
@@ -129,7 +130,7 @@ class BaseBot(object):
         if len(prefix_like_commands) == 1:
             subcommand = prefix_like_commands[0]
             command_method = getattr(self, "command_" + subcommand)
-
+            self.payload = payload
             # Parse slack args
             slack_args = shlex.split(payload['args'].encode('utf8'))
             slack_optional_args = [x for x in slack_args if '=' in x]
