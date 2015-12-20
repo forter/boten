@@ -62,3 +62,6 @@ def poll_sqs(queue):
 
     yield msg_obj
     queue.delete_message(msg)
+
+
+
