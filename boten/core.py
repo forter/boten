@@ -104,6 +104,7 @@ class BaseBot(object):
     def __init__(self, config):
         self.commands = [method.partition('_')[2] for method in dir(self) if method.startswith('command')]
         self.config = config
+        self.payload = None
 
     def usage(self, func):
 
@@ -126,6 +127,7 @@ class BaseBot(object):
                     optional=",".join(func_optional_args))
 
     def run_command(self, payload):
+        self.payload = payload
         # Find method staring with gotten command
         prefix_like_commands = filter(lambda x: x.startswith(payload['subcommand']), self.commands)
         if len(prefix_like_commands) == 1:
