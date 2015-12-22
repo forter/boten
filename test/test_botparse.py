@@ -34,7 +34,7 @@ def test_available_commands():
 def test_arg_bot_with_arg():
     bot = TestBot({})
     response = list(bot.run_command(payloads.arg_bot_with_arg))
-    assert response[0] == "hello moshe"
+    assert response[0] == "hello derp"
 
 
 def test_arg_bot_with_no_args():
@@ -58,7 +58,7 @@ def test_no_arg_bot_with_arg():
 def test_optional_arg_bot_with_optional_arg():
     bot = TestBot({})
     response = list(bot.run_command(payloads.optional_arg_bot_with_optional_arg))
-    assert response[0] == 'hello moshe'
+    assert response[0] == 'hello derp'
 
 
 def test_optional_arg_bot_with_no_arg():
