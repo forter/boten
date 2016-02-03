@@ -7,6 +7,7 @@ import utils
 import logging
 import os
 import click
+import multiprocessing
 
 
 def init_bots():
@@ -34,6 +35,14 @@ def init_bots():
     return bots
 
 
+def run_payload(bot, payload, logger):
+    try:
+        for message in bot.run_command(payload):
+            utils.respond(payload, message)
+    except Exception:
+        logger.exception("Cannot run")
+
+
 @click.command()
 @click.option('-c', '--conf-file', default='boten/boten.cfg', help='Boten config file')
 def main(conf_file):
@@ -50,18 +59,14 @@ def main(conf_file):
         with utils.poll_sqs(queue) as payload:
             logger.info('Got new job')
             bot_name = payload['command'][1:]
-            if payload['token'] != config['config']['slack_token']:
+            if payload['token'] != config[bot_name]['slack_token']:
                 logger.warning('Got unauthorized slack command')
                 logger.warning(payload)
                 continue
             payload['subcommand'] = payload['text'].partition(' ')[0]
             payload['args'] = payload['text'].partition(' ')[2]
-            try:
-                for message in bots[bot_name].run_command(payload):
-                    utils.respond(payload, message)
-            except Exception:
-                logger.exception("Cannot run")
-
+            p = multiprocessing.Process(target=run_payload, args=(bots[bot_name], payload, logger))
+            p.start()
 
 if __name__ == '__main__':
     main()
