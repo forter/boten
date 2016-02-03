@@ -50,12 +50,16 @@ def main(conf_file):
         with utils.poll_sqs(queue) as payload:
             logger.info('Got new job')
             bot_name = payload['command'][1:]
+            if payload['token'] != config['config']['slack_token']:
+                logger.warning('Got unauthorized slack command')
+                logger.warning(payload)
+                continue
             payload['subcommand'] = payload['text'].partition(' ')[0]
             payload['args'] = payload['text'].partition(' ')[2]
             try:
                 for message in bots[bot_name].run_command(payload):
                     utils.respond(payload, message)
-            except Exception as e:
+            except Exception:
                 logger.exception("Cannot run")
 
 
