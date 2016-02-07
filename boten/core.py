@@ -154,8 +154,9 @@ class BaseBot(object):
                 yield "Got TypeError while processing: {}\n{}".format(str(e), self.usage(command_method))
                 yield traceback.format_exc()
             except Exception as e:
+                stack_trace = traceback.format_exc()
                 yield "Got Exception while processing: {}\n{}".format(str(e), self.usage(command_method))
-                yield traceback.format_exc()
+                yield stack_trace
         elif len(prefix_like_commands) == 0:
             yield "*Command not found,*\navailable commands are:\n{}".format("\n".join(self.commands))
             return
