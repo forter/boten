@@ -131,8 +131,9 @@ class BaseBot(object):
     def run_command(self, payload):
         self.payload = payload
         # Find method staring with gotten command
+        exact_command = payload['subcommand'] in self.commands
         prefix_like_commands = filter(lambda x: x.startswith(payload['subcommand']), self.commands)
-        if len(prefix_like_commands) == 1:
+        if len(prefix_like_commands) == 1 or exact_command:
             subcommand = prefix_like_commands[0]
             command_method = getattr(self, "command_" + subcommand)
 
