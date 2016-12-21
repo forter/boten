@@ -22,6 +22,7 @@ now, if someone will type `/fun make_me_laugh` (or even `/fun mak` cuase boten t
 ### Parsing args - Mandatory args
 Just create new function and ask for args, Boten will enforce the user for them.
 ```python
+
     def command_ping(self, user_name):
         yield "pong {}".format(user_name)
 ```
