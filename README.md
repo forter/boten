@@ -1,7 +1,7 @@
 # Boten - python bot for slack
 
 ### Write new bot
-lets look on example (funBot):
+lets look at an example (funBot):
 ```python
 import requests
 from bs4 import BeautifulSoup
@@ -17,10 +17,10 @@ class Bot(core.BaseBot):
         yield post_content.find('img')['src']
 
 ```
-now, if someone will type `/fun make_me_laugh` (or even `/fun mak` cuase boten trying to check for method starting with mak) he will send funny post from [devopsreactions](http://devopsreactions.tumblr.com/)
+now, if someone will type `/fun make_me_laugh` (or even `/fun mak` as boten matches prefix) he will send funny post from [devopsreactions](http://devopsreactions.tumblr.com/)
 
 ### Parsing args - Mandatory args
-Just create new function and ask for args, Boten will enforce the user for them.
+Create a new function and ask for args, Boten will validate the user input for you.
 ```python
     def command_ping(self, user_name):
         yield "pong {}".format(user_name)
