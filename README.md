@@ -52,6 +52,6 @@ Simply `/fun help`, `/fun ping help`
 
 
 ## Add bot
-0. create python file under `bots_available`
-0. link from `bots_available` to `bots_enabled`
-0. add new slash command in slack ui - [Integrations](https://forter.slack.com/services)
+1. create python file under `bots_available`
+2. link from `bots_available` to `bots_enabled`
+3. add new slash command in slack ui - [Integrations](https://forter.slack.com/services)
