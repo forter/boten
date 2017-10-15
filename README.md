@@ -1,6 +1,6 @@
 # Boten - python bot for slack
 
-### Write new bot
+### Write a new bot
 lets look at an example (funBot):
 ```python
 import requests
